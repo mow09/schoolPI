@@ -1,6 +1,8 @@
 .DS_Store
 Untitled.ipynb
-data
+data/plus
+data/config
+data/*.img
 personal_data.py
 __pycache__
 .ipynb_checkpoints
