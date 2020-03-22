@@ -1,5 +1,6 @@
 # wokrking machine MacOS
 # schoolPI
+
 - automated setup of raspberrypi
 ## Setup I
 - ssd_config
@@ -20,3 +21,7 @@ XFCE
 ### Browser
 - Chromium
 `sudo apt install chromium-browser`
+
+- [ ] create personal_data.py template
+    - host computer password of the burning machine
+- [ ] solution for entering server with pseude terminal...

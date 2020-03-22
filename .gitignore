@@ -1,7 +1,6 @@
 .DS_Store
 Untitled.ipynb
 data/plus
-data/config
 data/*.img
 personal_data.py
 __pycache__
