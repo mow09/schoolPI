@@ -20,7 +20,7 @@ network_content = ['country=DE',
                    '    psk="73B66E8P646GT94H"',
                    '    key_mgmt=WPA-PSK',
                    '}']
-BOOT_VOLUME_PATH = '/Volumes/boot/'
+# BOOT_VOLUME_PATH = '/Volumes/boot/'
 
 
 def wait_for(what_for: str = '', secs: int = 3):
@@ -31,19 +31,20 @@ def wait_for(what_for: str = '', secs: int = 3):
         sleep(1)
 
 
-def setup_network(boot_volume: str = BOOT_VOLUME_PATH):
+def setup_network(boot_volume: str = '/Volumes/boot/'):
     """Write the networkfile into boot."""
-    with open(boot_volume+'wpa_supplicant.conf', 'w') as f:
+    file_name = boot_volume+'wpa_supplicant.conf'
+    with open(file_name, 'w') as f:
         for line in network_content:
             f.write(line)
             f.write('\n')
     wait_for(secs=1)
-    p = run(['touch', BOOT_VOLUME_PATH+'ssh'], stderr=PIPE)
+    p = run(['touch', boot_volume+'ssh'], stderr=PIPE)
     print(p.stderr)
 
 
 def get_disk_name(disk_size: int = 16) -> str:
-    """Get the ssd dev by size and not in protected."""
+    """Get the sd dev by size and not in protected."""
     proc = run(['diskutil', 'list'], stdout=PIPE, encoding='utf-8')
     for each_info in (proc.stdout.strip().split('\n\n')):
         each_info_list = each_info.split('\n')
@@ -61,18 +62,24 @@ def get_disk_name(disk_size: int = 16) -> str:
 def burn_disk(disk_name: str):
     """Unmount and burn the disk."""
     # unmoutn the disk
-    run(['diskutil', 'unmountDisk', disk_name])
+    p = run(['diskutil', 'unmountDisk', disk_name], stderr=PIPE)
+    if p.stderr:
+        raise 'Could not unmount - close all windows on this disk'
+    print('Burn SD')
     # burn the image
     proc = Popen('sudo -S dd bs=1m if={} of={} conv=sync'
                  .format(IMAGE_FILE_PATH, disk_name),
                  shell=True,
                  stdin=PIPE,
-                 stdout=PIPE
+                 # # stdout=PIPE,
+                 # # stderr=PIPE,
                  )
     proc.communicate(personal_data.pw)
+    # if proc.stderr:
+    #     raise
 
 
-def setup_ssd(set_disk: str = ''):
+def setup_sd(set_disk: str = ''):
     """Configurat SD for RaspberryPi."""
     if set_disk:
         # [assert (each == 'word') for each in PROTECTED_DISK]
@@ -86,10 +93,10 @@ def setup_ssd(set_disk: str = ''):
     wait_for('setting up the network', 3)
     setup_network()
     wait_for('unmount disk', 3)
-    run(['diskutil', 'unmountDisk', disk_name])
+    # run(['diskutil', 'unmountDisk', disk_name])
 
 
 if __name__ == "__main__":
     """Run it as main."""
-    print('RUN ssd_config')
-    setup_ssd()
+    print('RUN sd_config')
+    setup_sd()
