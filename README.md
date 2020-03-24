@@ -1,3 +1,5 @@
+# BASH it in the long way
+
 # wokrking machine MacOS (Unix/\*nix)
 - BOOT_VOLUME_PATH is different to Linux
 # schoolPI
@@ -18,9 +20,9 @@ Debian:
 `sudo apt-get update`
 `sudo apt-get upgrade`
 ### Desktop Environment
-`sudo apt-get tree`
+`sudo apt-get install tree`
 #### XFCE4
-`sudo apt-get install xfce4 xfce4-terminal`
+<!-- `sudo apt-get install xfce4 xfce4-terminal` -->
 OR
 `sudo apt-get install xfce4 xfce4-all`
 `sudo update-alternatives --config x-session-manager`

@@ -81,6 +81,19 @@ def config_remote():
     run(['cat', 'remote_school_setup.py'])
 
 
+def get_pi_ip():
+    """Get the IP.
+
+    get_pi_ip() runs arp -a and returns IP of rasyberrypi.
+    """
+    p = run(['arp', '-a'], stdout=PIPE, encoding='utf-8')
+    for each in p.stdout.split('\n'):
+        if each.split(' ')[0] == 'raspberrypi':
+            return (each.split(' ')[1][1:-1])
+        else:
+            raise 'NO Pi-iP-Adress found...'
+
+
 def system_connect_execute(ip_adress: str = ''):
     """
     Connect to the system via ssh.
@@ -90,12 +103,7 @@ def system_connect_execute(ip_adress: str = ''):
     """
     print('Get the IP adress')
     if not ip_adress:
-        p = run(['arp', '-a'], stdout=PIPE, encoding='utf-8')
-        for each in p.stdout.split('\n'):
-            if each.split(' ')[0] == 'raspberrypi':
-                pi_adress = (each.split(' ')[1][1:-1])
-            else:
-                raise 'NO Pi-iP-Adress found...'
+        pi_adress = get_pi_ip()
     else:
         pi_adress = ip_adress
 

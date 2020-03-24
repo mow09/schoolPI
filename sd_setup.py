@@ -2,9 +2,8 @@
 from subprocess import run
 from subprocess import PIPE
 from subprocess import Popen
-# from os import path
 from time import sleep
-from os import path
+import os
 # personal_data is not in repository
 import personal_data
 
@@ -20,7 +19,13 @@ network_content = ['country=DE',
                    '    psk="73B66E8P646GT94H"',
                    '    key_mgmt=WPA-PSK',
                    '}']
-BOOT_VOLUME_PATH = '/Volumes/boot/'
+
+p = run(['uname', '-s'], stdout=PIPE, encoding='utf-8')
+# print(p.stdout.strip())
+if p.stdout.strip() == 'Darwin':
+    BOOT_VOLUME_PATH = '/Volumes/boot/'
+elif p.stdout.strip() == 'Linux':
+    BOOT_VOLUME_PATH = '/media/boot/'
 
 
 def wait_for(what_for: str = '', secs: int = 3):
@@ -33,7 +38,7 @@ def wait_for(what_for: str = '', secs: int = 3):
 
 def setup_network(boot_volume: str = BOOT_VOLUME_PATH):
     """Write the networkfile into boot."""
-    file_name_wpa = path.join(boot_volume, 'wpa_supplicant.conf')
+    file_name_wpa = os.path.join(boot_volume, 'wpa_supplicant.conf')
     while not boot_volume:
         ...
     print('Put network files.')
@@ -42,7 +47,7 @@ def setup_network(boot_volume: str = BOOT_VOLUME_PATH):
             f.write(line)
             f.write('\n')
     wait_for(secs=1)
-    file_name_ssh = path.join(boot_volume, 'ssh')
+    file_name_ssh = os.path.join(boot_volume, 'ssh')
     p = run(['touch', file_name_ssh], stderr=PIPE)
     print(p.stderr)
 
@@ -63,11 +68,39 @@ def get_disk_name(disk_size: int = 16) -> str:
                             return disk_name
 
 
+def choose_image():
+    """Menu to choose the image."""
+    menu_holder = {}
+    counter = 1
+    for file in (os.listdir('data/')):
+        if 'raspbian' in file:
+            # print(file)
+            if file.endswith('.img'):
+                menu_holder[counter] = file
+            counter += 1
+    menu_display = 'Press number:\n'
+    for key, val in menu_holder.items():
+        menu_display += f'\t{key}: {val}\n'
+
+    try:
+        file_nr = int(input(f"{menu_display}"))
+        if file_nr not in [key for key in menu_holder.keys()]:
+            print(f'Number must be in {[key for key in menu_holder.keys()]}')
+            choose_image()
+    except ValueError:
+        print('It must be a number.')
+        print('It must be an integer')
+        choose_image()
+
+    return menu_holder[file_nr]
+
+
 def burn_disk(disk_name: str):
     """Unmount and burn disk.
 
     Make sure you set up your personal_data.py with pw=str().
     """
+    image_path = os.path.join('data/', choose_image())
     # unmoutn the disk
     p = run(['diskutil', 'unmountDisk', disk_name], stderr=PIPE)
     if p.stderr:
@@ -75,7 +108,7 @@ def burn_disk(disk_name: str):
     print('Burn SD')
     # burn the image
     proc = Popen('sudo -S dd bs=1m if={} of={} conv=sync'
-                 .format(IMAGE_FILE_PATH, disk_name),
+                 .format(image_path, disk_name),
                  shell=True,
                  stdin=PIPE,
                  # # stdout=PIPE,
@@ -108,3 +141,5 @@ if __name__ == "__main__":
     """Run it as main."""
     print('RUN sd_config')
     setup_sd()
+    # print(choose_image())
+    # print(BOOT_VOLUME_PATH)

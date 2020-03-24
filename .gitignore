@@ -5,3 +5,4 @@ data/*.img
 personal_data.py
 __pycache__
 .ipynb_checkpoints
+*zip
