@@ -18,13 +18,13 @@ network_content = ['country=DE',
                    '    scan_ssid=1',
                    '    psk="73B66E8P646GT94H"',
                    '    key_mgmt=WPA-PSK',
+                   '}',
+                   'network={',
+                   '    ssid="ASS-PN"',
+                   '    scan_ssid=1',
+                   '    psk="#HdWwhWidS!?"',
+                   '    key_mgmt=WPA-PSK',
                    '}']
-# 'network={',
-# '    ssid="o2-WLAN67"',
-# '    scan_ssid=1',
-# '    psk="73B66E8P646GT94H"',
-# '    key_mgmt=WPA-PSK',
-# '}']
 
 
 def wait_for(what_for: str = '', secs: int = 3):
