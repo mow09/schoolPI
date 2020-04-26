@@ -19,13 +19,12 @@ network_content = ['country=DE',
                    '    psk="73B66E8P646GT94H"',
                    '    key_mgmt=WPA-PSK',
                    '}']
-
-p = run(['uname', '-s'], stdout=PIPE, encoding='utf-8')
-# print(p.stdout.strip())
-if p.stdout.strip() == 'Darwin':
-    BOOT_VOLUME_PATH = '/Volumes/boot/'
-elif p.stdout.strip() == 'Linux':
-    BOOT_VOLUME_PATH = '/media/boot/'
+# 'network={',
+# '    ssid="o2-WLAN67"',
+# '    scan_ssid=1',
+# '    psk="73B66E8P646GT94H"',
+# '    key_mgmt=WPA-PSK',
+# '}']
 
 
 def wait_for(what_for: str = '', secs: int = 3):
@@ -36,11 +35,18 @@ def wait_for(what_for: str = '', secs: int = 3):
         sleep(1)
 
 
-def setup_network(boot_volume: str = BOOT_VOLUME_PATH):
+def setup_network(boot_volume: str):
     """Write the networkfile into boot."""
-    file_name_wpa = os.path.join(boot_volume, 'wpa_supplicant.conf')
+    p = run(['uname', '-s'], stdout=PIPE, encoding='utf-8')
+    # print(p.stdout.strip())
+    if not boot_volume:
+        if p.stdout.strip() == 'Darwin':
+            boot_volume = '/Volumes/boot/'
+        elif p.stdout.strip() == 'Linux':
+            boot_volume = '/media/boot/'
     while not boot_volume:
         ...
+    file_name_wpa = os.path.join(boot_volume, 'wpa_supplicant.conf')
     print('Put network files.')
     with open(file_name_wpa, 'w') as f:
         for line in network_content:
