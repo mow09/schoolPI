@@ -60,7 +60,7 @@ def connect_to_pi():
         if counter > 0:
             wait_for('No RaspberryPi IP-adress found...', waiter)
         counter += 1
-        if counter == 45:
+        if counter == 56:
             wait_for('Program will stop!', waiter)
             print(ask_ip_connection[2])
             raise "NO RASPBERRY IP FOUND"
@@ -229,4 +229,9 @@ ssh-keygen -R 192.168.1.85
 
 sshpass -p raspberry ssh -o UserKnownHostsFile=~/.ssh/known_hosts -o StrictHostKeyChecking=no pi@192.168.1.85
 sshpass -p raspberry ssh -o UserKnownHostsFile=~/.ssh/known_hosts -o StrictHostKeyChecking=no pi@192.168.1.85
+"""
+"""
+
+LANG=en_GB.UTF-8
+env | grep LANG
 """
