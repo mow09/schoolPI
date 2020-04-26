@@ -146,6 +146,11 @@ def setup_sd(set_disk: str = ''):
 if __name__ == "__main__":
     """Run it as main."""
     print('RUN sd_config')
-    setup_sd()
+    x = input('Enter a disk number or let it run/search for it\n')
+    if x == '':
+        setup_sd()
+    else:
+        # x = 'disk' + x
+        setup_sd(set_disk=x)
     # print(choose_image())
     # print(BOOT_VOLUME_PATH)
