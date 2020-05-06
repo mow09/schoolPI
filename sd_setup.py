@@ -10,6 +10,15 @@ import personal_data
 
 PROTECTED_DISK = ['/dev/disk0', '/dev/disk1']
 IMAGE_FILE_PATH = 'data/2020-02-13-raspbian-buster-lite.img'
+network_insert = ['country=DE',
+                   'ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev',
+                   'update_config=1',
+                   'network={',
+                   '    ssid="{{ wlan_name }}"',
+                   '    scan_ssid=1',
+                   '    psk="{{ wlan_pw }}"',
+                   '    key_mgmt=WPA-PSK',
+                   '}']
 network_content = ['country=DE',
                    'ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev',
                    'update_config=1',
@@ -143,14 +152,29 @@ def setup_sd(set_disk: str = ''):
     run(['diskutil', 'unmountDisk', disk_name])
 
 
+def insert_settings(network_insert):
+    """Fill settings network_insert in template."""
+    ...
+
+
+def insert_dir():
+    """Insert file path to save."""
+    ...
+
+
 if __name__ == "__main__":
     """Run it as main."""
     print('RUN sd_config')
-    x = input('Enter a disk number or let it run/search for it\n')
-    if x == '':
-        setup_sd()
+    create_files = input(f'Create files Y[n]: ')
+    if create_files == 'Y':
+        insert_settings()
+        insert_dir()
     else:
-        # x = 'disk' + x
-        setup_sd(set_disk=x)
-    # print(choose_image())
-    # print(BOOT_VOLUME_PATH)
+        x = input('Enter a disk number or let it run/search for it\n')
+        if x == '':
+            setup_sd()
+        else:
+            # x = 'disk' + x
+            setup_sd(set_disk=x)
+        # print(choose_image())
+        # print(BOOT_VOLUME_PATH)
